@@ -21,11 +21,18 @@ document.addEventListener("DOMContentLoaded", function (event) {
             letterSpace.textContent = "_";
             currentWord.appendChild(letterSpace);
         }
-        
+
         console.log(currentWordLetters);
     };
 
     newWord();
+
+    /*Below, need to use a for loop not only to check against currentWordLetters for
+    correctly guessed letters but also to record the position of each instance of the
+    letter within the array (should be easy -- will be the index in each instance)
+    and then to take those positions and use them to select underscores to replace
+    with the appropriate letter (the same in all cases for each time a keyup event
+    happens) within the array.*/
 
     document.addEventListener("keyup", function (event) {
         if (((event.keyCode > 64 && event.keyCode < 91) || (event.keyCode > 96 && event.keyCode < 123)) && (guessedLetters.length < 1)) {
