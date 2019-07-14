@@ -2,7 +2,7 @@ body {
     background-image: url("../images/background.jpg");
 }
 
-h2 {
+h2, p {
     color: #feda4a;
     font-family: 'Pathway Gothic One', sans-serif;
     font-size: 2.25vw;
