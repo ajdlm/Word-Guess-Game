@@ -26,7 +26,7 @@ p {
     letter-spacing: 1.5vw;
 }
 
-#mainContainer, #imageColumn, #textInterface{
+#mainContainer, #imageColumn, #textInterface {
     border-color: #feda4a !important;
     border-style: dashed;
     border-width: 3px !important;
@@ -35,4 +35,8 @@ p {
 #columnImage {
     max-width: 80%;
     max-height: 40vw;
+}
+
+#currentWord > p {
+    letter-spacing: 2.25vw;
 }
