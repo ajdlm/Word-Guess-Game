@@ -13,10 +13,15 @@ document.addEventListener("DOMContentLoaded", function (event) {
     var successCount = 0;
 
     function newWord() {
+        guessedLetters = [];
+        wordGuess = [];
+        currentWordLetters = [];
+        successCount = 0;
         var wordChoice = Math.floor(Math.random() * possibleWords.length);
         var nextWord = possibleWords[wordChoice];
         possibleWords.splice(wordChoice, 1);
         deleteChildren("currentWord");
+        deleteChildren("alreadyGuessed");
 
         /* Use nextWord to populate the currentWordLetters array with its letters.
 
@@ -39,8 +44,27 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     function deleteChildren(x) {
         var deleteQueue = document.getElementById(x);
-        deleteQueue.innerHTML = " ";
+        deleteQueue.innerHTML = "";
     };
+
+    function showCorrectGuess() {
+        for (k = 0; k < wordGuess.length; k++) {
+            var letterSpace = document.createElement("p");
+            letterSpace.textContent = wordGuess[k];
+            currentWord.appendChild(letterSpace);
+        };
+    };
+
+    /* function showCorrectGuess() {
+        guessedLetters.push(.toLowerCase());
+        deleteChildren("currentWord");
+
+        for (k = 0; k < wordGuess.length; k++) {
+            var letterSpace = document.createElement("p");
+            letterSpace.textContent = wordGuess[k];
+            currentWord.appendChild(letterSpace);
+        };
+    }; */
 
     newWord();
 
@@ -56,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
         for (j = 0; j < currentWordLetters.length; j++) {
             if ((event.key.toLowerCase() === currentWordLetters[j]) &&
-            (event.key.toLowerCase() !== wordGuess[j])) {
+                (event.key.toLowerCase() !== wordGuess[j])) {
                 wordGuess.splice(j, 1, event.key.toLowerCase());
                 correctGuess = true;
                 successCount++;
@@ -78,19 +102,19 @@ document.addEventListener("DOMContentLoaded", function (event) {
         };
 
         if ((correctGuess) && (successCount === currentWordLetters.length)) {
-            alert("You win!");
-            newWord();
+            deleteChildren("currentWord");
+            showCorrectGuess();
+            setTimeout(function () {
+                alert("You win!");
+                newWord();
+            }, 1);
         }
 
         else if (correctGuess) {
             guessedLetters.push(event.key.toLowerCase());
             deleteChildren("currentWord");
             //NO HERE ACTUALLY - the other thing is fine
-            for (k = 0; k < wordGuess.length; k++) {
-                var letterSpace = document.createElement("p");
-                letterSpace.textContent = wordGuess[k];
-                currentWord.appendChild(letterSpace);
-            };
+            showCorrectGuess();
         }
 
         else if ((!correctGuess) && ((event.keyCode > 64 && event.keyCode < 91) ||
@@ -98,6 +122,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             var keyPressed = document.createElement("p");
             keyPressed.textContent = " " + event.key.toLowerCase();
             alreadyGuessed.appendChild(keyPressed);
+            guessedLetters.push(event.key);
         }
 
         else if ((!correctGuess) && ((event.keyCode > 64 && event.keyCode < 91) ||
