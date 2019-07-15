@@ -74,6 +74,14 @@ document.addEventListener("DOMContentLoaded", function (event) {
         };
     };
 
+    function victory() {
+        winCount++;
+        deleteChildren("recordOfWins");
+        var letterSpace = document.createElement("p");
+        letterSpace.textContent = winCount;
+        recordOfWins.appendChild(letterSpace);    
+    };
+
     newWord();
 
     /* Below, need to use a for loop not only to check against currentWordLetters for
@@ -105,6 +113,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         if ((correctGuess) && (successCount === currentWordLetters.length)) {
             deleteChildren("currentWord");
             showCorrectGuess();
+            victory();
             setTimeout(function () {
                 alert("You win!");
                 newWord();
