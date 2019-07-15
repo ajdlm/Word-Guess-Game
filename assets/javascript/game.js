@@ -100,13 +100,23 @@ document.addEventListener("DOMContentLoaded", function (event) {
             if (winCount === 0) {
                 finalImage("luke-no.gif", "You didn't win at all. Better luck next time.");
                 var endAudio = new Audio("assets/audio/luke-no.mov");
+                var endAudio2 = new Audio("assets/audio/empire-ending-song.mp3");
                 endAudio.play();
+                endAudio.addEventListener("ended", function () {
+                    endAudio2.loop = true;
+                    endAudio2.play();
+                });
             }
 
             else if ((winCount > 0) && (winCount < 7)) {
                 finalImage("luke-no.gif", "You won " + winCount + " times. That's not so good.");
                 var endAudio = new Audio("assets/audio/luke-no.mov");
+                var endAudio2 = new Audio("assets/audio/empire-ending-song.mp3");
                 endAudio.play();
+                endAudio.addEventListener("ended", function () {
+                    endAudio2.loop = true;
+                    endAudio2.play();
+                });
             }
 
             else if ((winCount > 6) && (winCount < 12)) {
