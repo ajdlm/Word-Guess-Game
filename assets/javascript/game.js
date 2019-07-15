@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         };
     };
 
-    function displayGuessesLeft () {
+    function displayGuessesLeft() {
         deleteChildren("guessesLeft");
         var letterSpace = document.createElement("p");
         letterSpace.textContent = guessesRemaining;
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         if (guessesRemaining === 0) {
             setTimeout(function () {
                 alert("You lose!");
-                newWord();
+                wordsLeftCheck();
             }, 1);
         };
     };
@@ -79,7 +79,54 @@ document.addEventListener("DOMContentLoaded", function (event) {
         deleteChildren("recordOfWins");
         var letterSpace = document.createElement("p");
         letterSpace.textContent = winCount;
-        recordOfWins.appendChild(letterSpace);    
+        recordOfWins.appendChild(letterSpace);
+    };
+
+    function finalImage(x, y) {
+        deleteChildren("mainContainer");
+        var endGif = document.createElement("img");
+        endGif.src = "assets/images/" + x;
+        endGif.style = "margin: 1.5rem auto 0; display: block; position: relative;";
+        var replaceWithGif = document.getElementById("mainContainer");
+        replaceWithGif.appendChild(endGif);
+        var endText = document.createElement("h2");
+        endText.textContent = y;
+        endText.style = "text-align: center; padding: 1.5rem 0;"
+        replaceWithGif.appendChild(endText);
+    };
+
+    function wordsLeftCheck() {
+        if (possibleWords.length === 0) {
+            if (winCount === 0) {
+                finalImage("luke-no.gif", "You didn't win at all. Better luck next time.");
+                var endAudio = new Audio("assets/audio/luke-no.mov");
+                endAudio.play();
+            }
+
+            else if ((winCount > 0) && (winCount < 7)) {
+                finalImage("luke-no.gif", "You won " + winCount + " times. That's not so good.");
+                var endAudio = new Audio("assets/audio/luke-no.mov");
+                endAudio.play();
+            }
+
+            else if ((winCount > 6) && (winCount < 12)) {
+                finalImage("medal-ceremony.gif", "You won " + winCount + " times. That's pretty good!");
+                var endAudio = new Audio("assets/audio/throne-room-theme.mp3");
+                endAudio.loop = true;
+                endAudio.play();
+            }
+
+            else {
+                finalImage("medal-ceremony.gif", "Wow! You got every single word! Very impressive!");
+                var endAudio = new Audio("assets/audio/throne-room-theme.mp3");
+                endAudio.loop = true;
+                endAudio.play();
+            }
+        }
+
+        else {
+            newWord();
+        };
     };
 
     newWord();
@@ -116,7 +163,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             victory();
             setTimeout(function () {
                 alert("You win!");
-                newWord();
+                wordsLeftCheck();
             }, 1);
         }
 
