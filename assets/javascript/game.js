@@ -15,10 +15,16 @@ document.addEventListener("DOMContentLoaded", function (event) {
     };
 
     var soundLibrary = {
-        bantha: "bantha.mp3", bowcaster: "laser-blast.mp3", droid: "R2D2.mp3",
-        jedi: "jedi", landspeeder: "landspeeder.mp3", lightsaber: "lightsaber.mov", nerfherder: "nerfherder.mp3",
-        padawan: "always-two.wav", sith: "dark-side-power.mp3", wookie: "chewbacca.wav"
+        bantha: "bantha.mp3", bowcaster: "laser-blast.mp3", carbonite: "carbonite-freezer.mp3", droid: "R2D2.mp3",
+        ewok: "ewok.mp3", jedi: "jedi.mp3", landspeeder: "landspeeder.mp3", lightsaber: "lightsaber.mov",
+        nerfherder: "nerfherder.mp3", padawan: "always-two.wav", sith: "dark-side-power.mp3", wookie: "chewbacca.wav"
     };
+
+    var keysPaused = false;
+
+    var starWarsTheme = new Audio("assets/audio/star-wars-theme.mp3");
+
+    var audioPlaying = false;
 
     var correctGuess = false;
 
@@ -62,6 +68,13 @@ document.addEventListener("DOMContentLoaded", function (event) {
         deleteQueue.innerHTML = "";
     };
 
+    function playTheme() {
+        if (!audioPlaying) {
+            starWarsTheme.play();
+        };
+        audioPlaying = true;
+    };
+
     function showCorrectGuess() {
         for (k = 0; k < wordGuess.length; k++) {
             var letterSpace = document.createElement("p");
@@ -99,6 +112,12 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     function replaceImage() {
         swapImages(alternateImages[nextWord]);
+        var imageAudio = new Audio("assets/audio/" + soundLibrary[nextWord]);
+        starWarsTheme.pause();
+        imageAudio.play();
+        imageAudio.addEventListener("ended", function () {
+            starWarsTheme.play();
+        });
     };
 
     function victory() {
@@ -114,7 +133,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         deleteChildren("mainContainer");
         var endGif = document.createElement("img");
         endGif.src = "assets/images/" + x;
-        endGif.style = "margin: 1.5rem auto 0; display: block;";
+        endGif.style = "margin: 1.5rem auto 0; display: block; max-width: 80%;";
         var replaceWithGif = document.getElementById("mainContainer");
         replaceWithGif.appendChild(endGif);
         var endText = document.createElement("h2");
@@ -123,51 +142,59 @@ document.addEventListener("DOMContentLoaded", function (event) {
         replaceWithGif.appendChild(endText);
     };
 
+    function lukeSezNo() {
+        starWarsTheme.pause();
+        var endAudio = new Audio("assets/audio/luke-no.mov");
+        var endAudio2 = new Audio("assets/audio/empire-ending-song.mp3");
+        endAudio.play();
+        endAudio.addEventListener("ended", function () {
+            endAudio2.loop = true;
+            endAudio2.play();
+        });
+    };
+
+    function tooBadChewie() {
+        starWarsTheme.pause();
+        var endAudio = new Audio("assets/audio/throne-room-theme.mp3");
+        endAudio.loop = true;
+        endAudio.play();
+    };
+
     function wordsLeftCheck() {
         if (possibleWords.length === 0) {
             if (winCount === 0) {
                 finalImage("luke-no.gif", "You didn't win at all. Better luck next time.");
-                var endAudio = new Audio("assets/audio/luke-no.mov");
-                var endAudio2 = new Audio("assets/audio/empire-ending-song.mp3");
-                endAudio.play();
-                endAudio.addEventListener("ended", function () {
-                    endAudio2.loop = true;
-                    endAudio2.play();
-                });
+                lukeSezNo();
             }
 
             else if ((winCount > 0) && (winCount < 7)) {
                 finalImage("luke-no.gif", "You won " + winCount + " times. That's not so good.");
-                var endAudio = new Audio("assets/audio/luke-no.mov");
-                var endAudio2 = new Audio("assets/audio/empire-ending-song.mp3");
-                endAudio.play();
-                endAudio.addEventListener("ended", function () {
-                    endAudio2.loop = true;
-                    endAudio2.play();
-                });
+                lukeSezNo();
             }
 
             else if ((winCount > 6) && (winCount < 12)) {
                 finalImage("medal-ceremony.gif", "You won " + winCount + " times. That's pretty good!");
-                var endAudio = new Audio("assets/audio/throne-room-theme.mp3");
-                endAudio.loop = true;
-                endAudio.play();
+                tooBadChewie();
             }
 
             else {
                 finalImage("medal-ceremony.gif", "Wow! You got every single word! Very impressive!");
-                var endAudio = new Audio("assets/audio/throne-room-theme.mp3");
-                endAudio.loop = true;
-                endAudio.play();
+                tooBadChewie();
             }
         }
 
         else {
             newWord();
         };
+
+        keysPaused = false;
     };
 
     newWord();
+
+    document.addEventListener("click", function (event) {
+        playTheme();
+    });
 
     /* Below, need to use a for loop not only to check against currentWordLetters for
     correctly guessed letters but also to record the position of each instance of the
@@ -176,69 +203,73 @@ document.addEventListener("DOMContentLoaded", function (event) {
     with the appropriate letter (the same in all cases for each time a keyup event
     happens) within the array. */
 
-    document.addEventListener("keyup", function (event) {
-        correctGuess = false;
+        document.addEventListener("keyup", function (event) {
+            playTheme();
 
-        var badGuessCount = document.getElementById("alreadyGuessed").childElementCount;
+            if (!keysPaused) {
+                correctGuess = false;
 
-        for (j = 0; j < currentWordLetters.length; j++) {
-            if ((event.key.toLowerCase() === currentWordLetters[j]) &&
-                (event.key.toLowerCase() !== wordGuess[j])) {
-                wordGuess.splice(j, 1, event.key.toLowerCase());
-                correctGuess = true;
-                successCount++;
-            }
+                var badGuessCount = document.getElementById("alreadyGuessed").childElementCount;
 
-            else if ((event.key.toLowerCase() === currentWordLetters[j]) &&
-                (event.key.toLowerCase() === wordGuess[j])) {
-                correctGuess = true;
-            };
-        };
+                for (j = 0; j < currentWordLetters.length; j++) {
+                    if ((event.key.toLowerCase() === currentWordLetters[j]) &&
+                        (event.key.toLowerCase() !== wordGuess[j])) {
+                        wordGuess.splice(j, 1, event.key.toLowerCase());
+                        correctGuess = true;
+                        successCount++;
+                    }
 
-        if ((correctGuess) && (successCount === currentWordLetters.length)) {
-            deleteChildren("currentWord");
-            showCorrectGuess();
-            victory();
-            setTimeout(function () {
-                alert("You win!");
-                wordsLeftCheck();
-            }, 1);
-        }
+                    else if ((event.key.toLowerCase() === currentWordLetters[j]) &&
+                        (event.key.toLowerCase() === wordGuess[j])) {
+                        correctGuess = true;
+                    };
+                };
 
-        else if (correctGuess) {
-            guessedLetters.push(event.key.toLowerCase());
-            deleteChildren("currentWord");
-            showCorrectGuess();
-        }
-
-        else if ((!correctGuess) && ((event.keyCode > 64 && event.keyCode < 91) ||
-            (event.keyCode > 96 && event.keyCode < 123)) && (badGuessCount === 0)) {
-            var keyPressed = document.createElement("p");
-            keyPressed.textContent = event.key.toLowerCase();
-            alreadyGuessed.appendChild(keyPressed);
-            guessedLetters.push(event.key);
-            guessExpended();
-        }
-
-        else if ((!correctGuess) && ((event.keyCode > 64 && event.keyCode < 91) ||
-            (event.keyCode > 96 && event.keyCode < 123)) && (badGuessCount > 0)) {
-            for (i = 0; i < guessedLetters.length; i++) {
-                if (guessedLetters[i] === event.key.toLowerCase()) {
-                    break;
+                if ((correctGuess) && (successCount === currentWordLetters.length)) {
+                    keysPaused = true;
+                    deleteChildren("currentWord");
+                    showCorrectGuess();
+                    victory();
+                    setTimeout(function () {
+                        wordsLeftCheck();
+                    }, 3000);
                 }
 
-                else if ((guessedLetters[i] !== event.key) && (i === (guessedLetters.length - 1))) {
+                else if (correctGuess) {
+                    guessedLetters.push(event.key.toLowerCase());
+                    deleteChildren("currentWord");
+                    showCorrectGuess();
+                }
+
+                else if ((!correctGuess) && ((event.keyCode > 64 && event.keyCode < 91) ||
+                    (event.keyCode > 96 && event.keyCode < 123)) && (badGuessCount === 0)) {
                     var keyPressed = document.createElement("p");
-                    keyPressed.textContent = ", " + event.key.toLowerCase();
+                    keyPressed.textContent = event.key.toLowerCase();
                     alreadyGuessed.appendChild(keyPressed);
                     guessedLetters.push(event.key);
                     guessExpended();
                 }
-            }
-        };
 
-        console.log(wordGuess);
-    });
+                else if ((!correctGuess) && ((event.keyCode > 64 && event.keyCode < 91) ||
+                    (event.keyCode > 96 && event.keyCode < 123)) && (badGuessCount > 0)) {
+                    for (i = 0; i < guessedLetters.length; i++) {
+                        if (guessedLetters[i] === event.key.toLowerCase()) {
+                            break;
+                        }
+
+                        else if ((guessedLetters[i] !== event.key) && (i === (guessedLetters.length - 1))) {
+                            var keyPressed = document.createElement("p");
+                            keyPressed.textContent = ", " + event.key.toLowerCase();
+                            alreadyGuessed.appendChild(keyPressed);
+                            guessedLetters.push(event.key);
+                            guessExpended();
+                        }
+                    }
+                };
+
+                console.log(wordGuess);
+            };
+        });
 });
 
 

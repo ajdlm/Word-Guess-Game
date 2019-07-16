@@ -1,5 +1,7 @@
 body {
     background-image: url("../images/background.jpg");
+    min-height: 100%;
+    display: table;
 }
 
 h2, p {
@@ -26,6 +28,10 @@ p {
     letter-spacing: 1.5vw;
 }
 
+#mainContainer {
+    flex-grow: 1;
+}
+
 #mainContainer, #imageColumn, #textInterface {
     border-color: #feda4a !important;
     border-style: dashed;
@@ -39,4 +45,24 @@ p {
 
 #currentWord > p {
     letter-spacing: 2.25vw;
+}
+
+@media (max-width: 767px) {
+    h2, p {
+        font-size: 3.5vw;
+    }
+
+    #imageColumn {
+        border-right-width: 0 !important;
+        padding-bottom: 2rem !important;
+    }
+
+    #imageColumn > img {
+        max-height: 50vh;
+    }
+
+    #textInterface {
+        border-left-width: 0 !important;
+        border-top-width: 3px !important;
+    }
 }
