@@ -1,4 +1,13 @@
 document.addEventListener("DOMContentLoaded", function (event) {
+
+    // 2 BUGS: THE LETTERS ARE REPEATING AGAIN - THIS HAS SOMETHING
+    // TO DO WITH WHAT YOU DID TO ADD THE COMMA (LOOK INTO THAT)
+
+    // THE OTHER BUG IS THAT IF THE SOUNDBITE FROM THE LAST CORRECTLY
+    // GUESSED WORD EXTENDS THROUGH THE BEGINNING OF THE POST-GAME
+    // SONG, IT WILL START PLAYING THE STAR WARS THEME OVER THE
+    // POST-GAME SONG
+
     var guessedLetters = [];
 
     var wordGuess = [];
@@ -35,6 +44,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
     var winCount = 0;
 
     var nextWord = "";
+
+    var previousGuess = "";
 
     function newWord() {
         guessedLetters = [];
@@ -94,10 +105,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
         guessesRemaining--;
         displayGuessesLeft();
         if (guessesRemaining === 0) {
+            keysPaused = true;
             setTimeout(function () {
-                alert("You lose!");
                 wordsLeftCheck();
-            }, 1);
+            }, 1500);
         };
     };
 
@@ -203,73 +214,79 @@ document.addEventListener("DOMContentLoaded", function (event) {
     with the appropriate letter (the same in all cases for each time a keyup event
     happens) within the array. */
 
-        document.addEventListener("keyup", function (event) {
-            playTheme();
+    document.addEventListener("keyup", function (event) {
+        playTheme();
 
-            if (!keysPaused) {
-                correctGuess = false;
+        if (!keysPaused) {
+            correctGuess = false;
 
-                var badGuessCount = document.getElementById("alreadyGuessed").childElementCount;
+            var badGuessCount = document.getElementById("alreadyGuessed").childElementCount;
 
-                for (j = 0; j < currentWordLetters.length; j++) {
-                    if ((event.key.toLowerCase() === currentWordLetters[j]) &&
-                        (event.key.toLowerCase() !== wordGuess[j])) {
-                        wordGuess.splice(j, 1, event.key.toLowerCase());
-                        correctGuess = true;
-                        successCount++;
-                    }
+            for (j = 0; j < currentWordLetters.length; j++) {
+                if ((event.key.toLowerCase() === currentWordLetters[j]) &&
+                    (event.key.toLowerCase() !== wordGuess[j])) {
+                    wordGuess.splice(j, 1, event.key.toLowerCase());
+                    correctGuess = true;
+                    successCount++;
+                }
 
-                    else if ((event.key.toLowerCase() === currentWordLetters[j]) &&
-                        (event.key.toLowerCase() === wordGuess[j])) {
-                        correctGuess = true;
-                    };
+                else if ((event.key.toLowerCase() === currentWordLetters[j]) &&
+                    (event.key.toLowerCase() === wordGuess[j])) {
+                    correctGuess = true;
                 };
-
-                if ((correctGuess) && (successCount === currentWordLetters.length)) {
-                    keysPaused = true;
-                    deleteChildren("currentWord");
-                    showCorrectGuess();
-                    victory();
-                    setTimeout(function () {
-                        wordsLeftCheck();
-                    }, 3000);
-                }
-
-                else if (correctGuess) {
-                    guessedLetters.push(event.key.toLowerCase());
-                    deleteChildren("currentWord");
-                    showCorrectGuess();
-                }
-
-                else if ((!correctGuess) && ((event.keyCode > 64 && event.keyCode < 91) ||
-                    (event.keyCode > 96 && event.keyCode < 123)) && (badGuessCount === 0)) {
-                    var keyPressed = document.createElement("p");
-                    keyPressed.textContent = event.key.toLowerCase();
-                    alreadyGuessed.appendChild(keyPressed);
-                    guessedLetters.push(event.key);
-                    guessExpended();
-                }
-
-                else if ((!correctGuess) && ((event.keyCode > 64 && event.keyCode < 91) ||
-                    (event.keyCode > 96 && event.keyCode < 123)) && (badGuessCount > 0)) {
-                    for (i = 0; i < guessedLetters.length; i++) {
-                        if (guessedLetters[i] === event.key.toLowerCase()) {
-                            break;
-                        }
-
-                        else if ((guessedLetters[i] !== event.key) && (i === (guessedLetters.length - 1))) {
-                            var keyPressed = document.createElement("p");
-                            keyPressed.textContent = ", " + event.key.toLowerCase();
-                            alreadyGuessed.appendChild(keyPressed);
-                            guessedLetters.push(event.key);
-                            guessExpended();
-                        }
-                    }
-                };
-
-                console.log(wordGuess);
             };
-        });
+
+            if ((correctGuess) && (successCount === currentWordLetters.length)) {
+                keysPaused = true;
+                deleteChildren("currentWord");
+                showCorrectGuess();
+                victory();
+                setTimeout(function () {
+                    wordsLeftCheck();
+                }, 3000);
+            }
+
+            else if (correctGuess) {
+                guessedLetters.push(event.key.toLowerCase());
+                deleteChildren("currentWord");
+                showCorrectGuess();
+            }
+
+            else if ((!correctGuess) && ((event.keyCode > 64 && event.keyCode < 91) ||
+                (event.keyCode > 96 && event.keyCode < 123)) && (badGuessCount === 0)) {
+                var keyPressed = document.createElement("p");
+                keyPressed.textContent = event.key.toUpperCase();
+                alreadyGuessed.appendChild(keyPressed);
+                guessedLetters.push(event.key);
+                previousGuess = event.key.toUpperCase();
+                guessExpended();
+            }
+
+            else if ((!correctGuess) && ((event.keyCode > 64 && event.keyCode < 91) ||
+                (event.keyCode > 96 && event.keyCode < 123)) && (badGuessCount > 0)) {
+                for (i = 0; i < guessedLetters.length; i++) {
+                    if (guessedLetters[i] === event.key.toLowerCase()) {
+                        break;
+                    }
+
+                    else if ((guessedLetters[i] !== event.key) && (i === (guessedLetters.length - 1))) {
+                        var editThis = document.getElementById("alreadyGuessed");
+                        var addComma = editThis.lastChild;
+                        addComma.textContent = previousGuess + ",";
+                        var keyPressed = document.createElement("p");
+                        keyPressed.textContent = event.key.toUpperCase();
+                        keyPressed.style = "text-indent: 1.5vw;";
+                        alreadyGuessed.appendChild(keyPressed);
+                        guessedLetters.push(event.key);
+                        previousGuess = event.key.toUpperCase();
+                        guessExpended();
+                    }
+                }
+            };
+
+            console.log(wordGuess);
+        };
+    });
 });
 
 
