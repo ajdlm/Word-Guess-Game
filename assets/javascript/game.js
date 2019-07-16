@@ -16,6 +16,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     var winCount = 0;
 
+    var nextWord = "";
+
     function newWord() {
         guessedLetters = [];
         wordGuess = [];
@@ -23,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         successCount = 0;
         guessesRemaining = 12;
         var wordChoice = Math.floor(Math.random() * possibleWords.length);
-        var nextWord = possibleWords[wordChoice];
+        nextWord = possibleWords[wordChoice];
         possibleWords.splice(wordChoice, 1);
         deleteChildren("currentWord");
         deleteChildren("alreadyGuessed");
@@ -74,19 +76,47 @@ document.addEventListener("DOMContentLoaded", function (event) {
         };
     };
 
+    function swapImages(x) {
+        deleteChildren("imageColumn");
+        var nextImage = document.createElement("img");
+        nextImage.src = "assets/images/" + x;
+        nextImage.style = "margin: auto; display: block;";
+        var putImageHere = document.getElementById("imageColumn");
+        putImageHere.appendChild(nextImage);
+    };
+
+    function replaceImage() {
+        if (nextWord === "bantha") {
+            swapImages("bantha.jpeg");
+        }
+        
+        else if (nextWord === "bowcaster") {
+            swapImages("bowcaster.png");
+        }
+
+        else if (nextWord === "carbonite") {
+            swapImages(carbonite.jpg);
+        }
+
+        else if (nextWord === "droid") {
+            swapImages();
+        };
+    };
+
     function victory() {
         winCount++;
         deleteChildren("recordOfWins");
         var letterSpace = document.createElement("p");
         letterSpace.textContent = winCount;
         recordOfWins.appendChild(letterSpace);
+        replaceImage()
     };
 
     function finalImage(x, y) {
         deleteChildren("mainContainer");
         var endGif = document.createElement("img");
         endGif.src = "assets/images/" + x;
-        endGif.style = "margin: 1.5rem auto 0; display: block; position: relative;";
+        endGif.style = "margin: 1.5rem auto 0; display: block;";
         var replaceWithGif = document.getElementById("mainContainer");
         replaceWithGif.appendChild(endGif);
         var endText = document.createElement("h2");
