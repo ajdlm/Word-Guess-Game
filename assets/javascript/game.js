@@ -8,6 +8,18 @@ document.addEventListener("DOMContentLoaded", function (event) {
     var possibleWords = ["bantha", "bowcaster", "carbonite", "droid", "ewok", "jedi",
         "landspeeder", "lightsaber", "nerfherder", "padawan", "sith", "wookie"];
 
+    var alternateImages = {
+        bantha: "bantha.jpeg", bowcaster: "bowcaster.png", carbonite: "carbonite.jpg", droid: "droids.jpg",
+        ewok: "ewok.jpg", jedi: "jedi.jpg", landspeeder: "landspeeder.jpg", lightsaber: "lightsaber.jpg",
+        nerfherder: "han-solo.jpg", padawan: "padawan.jpg", sith: "sith.png", wookie: "chewbacca.jpg"
+    };
+
+    var soundLibrary = {
+        bantha: "bantha.mp3", bowcaster: "laser-blast.mp3", droid: "R2D2.mp3",
+        jedi: "jedi", landspeeder: "landspeeder.mp3", lightsaber: "lightsaber.mov", nerfherder: "nerfherder.mp3",
+        padawan: "always-two.wav", sith: "dark-side-power.mp3", wookie: "chewbacca.wav"
+    };
+
     var correctGuess = false;
 
     var successCount = 0;
@@ -80,27 +92,13 @@ document.addEventListener("DOMContentLoaded", function (event) {
         deleteChildren("imageColumn");
         var nextImage = document.createElement("img");
         nextImage.src = "assets/images/" + x;
-        nextImage.style = "margin: auto; display: block;";
+        nextImage.style = "margin: auto; display: block; max-width: 80%;";
         var putImageHere = document.getElementById("imageColumn");
         putImageHere.appendChild(nextImage);
     };
 
     function replaceImage() {
-        if (nextWord === "bantha") {
-            swapImages("bantha.jpeg");
-        }
-        
-        else if (nextWord === "bowcaster") {
-            swapImages("bowcaster.png");
-        }
-
-        else if (nextWord === "carbonite") {
-            swapImages(carbonite.jpg);
-        }
-
-        else if (nextWord === "droid") {
-            swapImages();
-        };
+        swapImages(alternateImages[nextWord]);
     };
 
     function victory() {
@@ -109,7 +107,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         var letterSpace = document.createElement("p");
         letterSpace.textContent = winCount;
         recordOfWins.appendChild(letterSpace);
-        replaceImage()
+        replaceImage();
     };
 
     function finalImage(x, y) {
