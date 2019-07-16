@@ -29,7 +29,7 @@ p {
 }
 
 #mainContainer {
-    flex-grow: 1;
+    flex-grow: 1 1 auto;
 }
 
 #mainContainer, #imageColumn, #textInterface {
