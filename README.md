@@ -36,4 +36,4 @@ performance.
 songs will play.
 
 -- The one that plays if the user does poorly will be
-accompanied by another soundbite: (assets/audio/luke-no.mov).
+accompanied by another [soundbite](assets/audio/luke-no.mov).
