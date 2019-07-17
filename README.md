@@ -22,6 +22,6 @@ HOW TO
 
 -- A message will appear beneath it, assessing the user's performance.
 
--- Depending on the quality of that performance, [one](assets/audio/empire-ending-song.mp3) of [two](assets/audio/throne-room-theme] songs will play.
+-- Depending on the quality of that performance, [one](assets/audio/empire-ending-song.mp3) of [two](assets/audio/throne-room-theme) songs will play.
 
 -- The one that plays if the user does poorly will be accompanied by another [soundbite](assets/audio/luke-no.mov).
