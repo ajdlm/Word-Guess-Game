@@ -1,13 +1,5 @@
 document.addEventListener("DOMContentLoaded", function (event) {
 
-    // 2 BUGS: THE LETTERS ARE REPEATING AGAIN - THIS HAS SOMETHING
-    // TO DO WITH WHAT YOU DID TO ADD THE COMMA (LOOK INTO THAT)
-
-    // THE OTHER BUG IS THAT IF THE SOUNDBITE FROM THE LAST CORRECTLY
-    // GUESSED WORD EXTENDS THROUGH THE BEGINNING OF THE POST-GAME
-    // SONG, IT WILL START PLAYING THE STAR WARS THEME OVER THE
-    // POST-GAME SONG
-
     var guessedLetters = [];
 
     var wordGuess = [];
@@ -47,6 +39,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     var previousGuess = "";
 
+    var gameNotEnding = true;
+
     function newWord() {
         guessedLetters = [];
         wordGuess = [];
@@ -61,8 +55,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
         displayGuessesLeft();
 
         /* Use nextWord to populate the currentWordLetters array with its letters.
-        Do this by running a for loop and, for each letter, pushing it into
-        currentWordLetters and appending a "_" beneath "Current Word" in the HTML. */
+        Do this by running a for loop and pushing each letter into currentWordLetters.
+        Every time this is done, append a "_" beneath "Current Word" in the HTML. */
         for (i = 0; i < nextWord.length; i++) {
             currentWordLetters.push(nextWord.charAt(i));
             var letterSpace = document.createElement("p");
@@ -70,8 +64,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
             currentWord.appendChild(letterSpace);
             wordGuess.push("_");
         }
-
-        console.log(currentWordLetters);
     };
 
     function deleteChildren(x) {
@@ -82,6 +74,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     function playTheme() {
         if (!audioPlaying) {
             starWarsTheme.play();
+            starWarsTheme.volume = 0.4;
         };
         audioPlaying = true;
     };
@@ -127,9 +120,17 @@ document.addEventListener("DOMContentLoaded", function (event) {
         starWarsTheme.pause();
         imageAudio.play();
         imageAudio.addEventListener("ended", function () {
-            starWarsTheme.play();
+            if (gameNotEnding) {
+                starWarsTheme.play();
+            };
         });
     };
+
+    starWarsTheme.addEventListener("ended", function () {
+            gameNotEnding = false;
+            /* Because all games must end, and because I'd rather the iconic
+            Star Wars opening music play only at the beginning of this one. */
+    });
 
     function victory() {
         winCount++;
@@ -154,6 +155,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     };
 
     function lukeSezNo() {
+        gameNotEnding = false;
         starWarsTheme.pause();
         var endAudio = new Audio("assets/audio/luke-no.mov");
         var endAudio2 = new Audio("assets/audio/empire-ending-song.mp3");
@@ -165,6 +167,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     };
 
     function tooBadChewie() {
+        gameNotEnding = false;
         starWarsTheme.pause();
         var endAudio = new Audio("assets/audio/throne-room-theme.mp3");
         endAudio.loop = true;
@@ -206,13 +209,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
     document.addEventListener("click", function (event) {
         playTheme();
     });
-
-    /* Below, need to use a for loop not only to check against currentWordLetters for
-    correctly guessed letters but also to record the position of each instance of the
-    letter within the array (should be easy -- will be the index in each instance)
-    and then to take those positions and use them to select underscores to replace
-    with the appropriate letter (the same in all cases for each time a keyup event
-    happens) within the array. */
 
     document.addEventListener("keyup", function (event) {
         playTheme();
@@ -257,7 +253,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 var keyPressed = document.createElement("p");
                 keyPressed.textContent = event.key.toUpperCase();
                 alreadyGuessed.appendChild(keyPressed);
-                guessedLetters.push(event.key);
+                guessedLetters.push(event.key.toLowerCase());
                 previousGuess = event.key.toUpperCase();
                 guessExpended();
             }
@@ -277,40 +273,12 @@ document.addEventListener("DOMContentLoaded", function (event) {
                         keyPressed.textContent = event.key.toUpperCase();
                         keyPressed.style = "text-indent: 1.5vw;";
                         alreadyGuessed.appendChild(keyPressed);
-                        guessedLetters.push(event.key);
+                        guessedLetters.push(event.key.toLowerCase());
                         previousGuess = event.key.toUpperCase();
                         guessExpended();
                     }
                 }
             };
-
-            console.log(wordGuess);
         };
     });
 });
-
-
-/*
-
-BUGS:
-
-1.) When the already guessed letters in the HTML wrap onto the next line,
-the first letter of the second line is preceded by ", ".
-
-Solution: Look into having the 10th (or 6th?) letter guessed auto-wrap?
-
-* * *
-
-2.) So the issue I'm encountering here is that the script is pushing a correctly guessed
-letter into the array irrespective of whether it's already there or not.
-
-But is this truly an issue?
-
-On the level of the HTML, there should be no visible difference, and given that this
-is Hangman, shouldn't the number of guesses only go down on incorrect guesses? So
-it's not like it's going to lower the number of guesses remaining to accidentally
-press the same letter twice.
-
-Look into possibly fixing this only once everything else is working.
-
-*/
