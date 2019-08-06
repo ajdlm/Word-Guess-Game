@@ -25,6 +25,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     var starWarsTheme = new Audio("assets/audio/star-wars-theme.mp3");
 
+    var imageAudio;
+
     var audioPlaying = false;
 
     var correctGuess = false;
@@ -116,7 +118,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     function replaceImage() {
         swapImages(alternateImages[nextWord]);
-        var imageAudio = new Audio("assets/audio/" + soundLibrary[nextWord]);
+        if (imageAudio !== undefined) {
+            imageAudio.pause();
+        };
+        imageAudio = new Audio("assets/audio/" + soundLibrary[nextWord]);
         starWarsTheme.pause();
         imageAudio.play();
         imageAudio.addEventListener("ended", function () {
@@ -127,9 +132,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
     };
 
     starWarsTheme.addEventListener("ended", function () {
-            gameNotEnding = false;
-            /* Because all games must end, and because I'd rather the iconic
-            Star Wars opening music play only at the beginning of this one. */
+        gameNotEnding = false;
+        /* Because all games must end, and because I'd rather the iconic
+        Star Wars opening music play only at the beginning of this one. */
     });
 
     function victory() {
@@ -156,6 +161,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     function lukeSezNo() {
         gameNotEnding = false;
+        if (imageAudio !== undefined) {
+            imageAudio.pause();
+        };
         starWarsTheme.pause();
         var endAudio = new Audio("assets/audio/luke-no.mov");
         var endAudio2 = new Audio("assets/audio/empire-ending-song.mp3");
@@ -168,6 +176,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     function tooBadChewie() {
         gameNotEnding = false;
+        if (imageAudio !== undefined) {
+            imageAudio.pause();
+        };
         starWarsTheme.pause();
         var endAudio = new Audio("assets/audio/throne-room-theme.mp3");
         endAudio.loop = true;
