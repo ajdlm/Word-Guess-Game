@@ -16,7 +16,7 @@ A game of Hangman with a Star Wars theme.
 
 * The number of guesses remaining as well as the letters already guessed will be displayed beneath the current word.
 
-* If the number of remaining guesses is reduced to 0, the game will display a new word and the user will lose the opportunity to guess the previous one correctly.
+* If the number of remaining guesses is reduced to 0, the game will display a new word, and the user will lose the opportunity to guess the previous one correctly.
 
 * There are 12 words total, which will be selected in a random order.
 
