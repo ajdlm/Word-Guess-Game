@@ -2,6 +2,8 @@
 
 A game of Hangman with a Star Wars theme.
 
+Deployed game at https://ajdlm.github.io/star-wars-hangman/.
+
 ## How to Play
 
 * The user guesses the words by pressing whichever keys he or she thinks might represent the letters that will correctly complete them.
